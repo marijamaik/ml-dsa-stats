@@ -1,0 +1,10 @@
+# Gradient Descent to minimise f(x) = x^2.
+# Repeat: x = x - lr * (2x), for N iterations. Return final x (rounded).
+class Solution:
+    def get_minimizer(self, iterations: int, learning_rate: float, init: int) -> float:
+        minimiser = init
+        for _ in range(iterations):
+            # Gradient of f(x) = x^2
+            d = 2 * minimiser
+            minimiser = minimiser - learning_rate * d
+        return round(minimiser, 5)
