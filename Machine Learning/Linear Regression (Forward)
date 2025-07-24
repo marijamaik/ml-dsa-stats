@@ -1,0 +1,15 @@
+import numpy as np
+from numpy.typing import NDArray
+
+class Solution:
+    
+    # Linear prediction: y = X @ w, then round to 5 decimals
+    def get_model_prediction(self, X: NDArray[np.float64], weights: NDArray[np.float64]) -> NDArray[np.float64]:
+        # Calculate the prediction using matrix multiplication
+        prediction = np.matmul(X, weights)
+        return np.round(prediction, 5)
+
+    # Mean Squared Error: MSE = mean((y_pred - y_true)^2), then round to 5 decimals
+    def get_error(self, model_prediction: NDArray[np.float64], ground_truth: NDArray[np.float64]) -> float:
+        error = np.mean(np.square(model_prediction - ground_truth))
+        return np.round(error, 5)
