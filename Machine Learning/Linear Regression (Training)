@@ -1,0 +1,38 @@
+import numpy as np
+from numpy.typing import NDArray
+
+# Fit a linear model to minimize MSE using gradient descent
+class Solution:
+    # Calculate the derivative of the MSE with respect to a specific weight
+    def get_derivative(self, model_prediction: NDArray[np.float64], ground_truth: NDArray[np.float64], N: int, X: NDArray[np.float64], desired_weight: int) -> float:
+        return -2 * np.dot(ground_truth - model_prediction, X[:, desired_weight]) / N
+
+    # Linear model: y_pred = X @ weights (flattened)
+    def get_model_prediction(self, X: NDArray[np.float64], weights: NDArray[np.float64]) -> NDArray[np.float64]:
+        return np.squeeze(np.matmul(X, weights))
+
+    learning_rate = 0.01
+
+    # Gradient Descent to train 3-weight linear model using MSE loss
+    def train_model(
+        self, 
+        X: NDArray[np.float64], 
+        Y: NDArray[np.float64], 
+        num_iterations: int, 
+        initial_weights: NDArray[np.float64]
+    ) -> NDArray[np.float64]:
+
+        for i in range(num_iterations):
+            model_prediction = self.get_model_prediction(X, initial_weights)
+
+            # Compute gradients for each weight
+            d1 = self.get_derivative(model_prediction, Y, len(X), X, 0)
+            d2 = self.get_derivative(model_prediction, Y, len(X), X, 1)
+            d3 = self.get_derivative(model_prediction, Y, len(X), X, 2)
+
+            # Update weights using gradient descent
+            initial_weights[0] -= self.learning_rate * d1
+            initial_weights[1] -= self.learning_rate * d2
+            initial_weights[2] -= self.learning_rate * d3
+
+        return np.round(initial_weights, 5)
