@@ -1,6 +1,8 @@
 import torch
 from typing import List, Tuple
 
+# Write the batch_loader() function which will generate a batch_size * context_length dataset and its labels. 
+# Use torch.randint() to pick batch_size different starting words for each sequence
 class Solution:
     def batch_loader(self, raw_dataset: str, context_length: int, batch_size: int) -> Tuple[List[List[str]]]:
         torch.manual_seed(0)
