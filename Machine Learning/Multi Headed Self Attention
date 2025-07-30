@@ -2,42 +2,55 @@ import torch
 import torch.nn as nn
 from torchtyping import TensorType
 
+# Multi-head self-attention module
 class MultiHeadedSelfAttention(nn.Module):
      
     def __init__(self, embedding_dim: int, attention_dim: int, num_heads: int):
         super().__init__()
         torch.manual_seed(0)
         self.att_heads = nn.ModuleList()
+        # Create multiple independent attention heads
         for i in range(num_heads):
             self.att_heads.append(self.SingleHeadAttention(embedding_dim, attention_dim // num_heads))
 
     def forward(self, embedded: TensorType[float]) -> TensorType[float]:
         head_outputs = []
+        # Pass input through each attention head
         for head in self.att_heads:
             head_outputs.append(head(embedded))
+        # Concatenate outputs from all heads along the feature dimension
         concatenated = torch.cat(head_outputs, dim = 2)
+        # Round values for cleaner output (not standard in real models)
         return torch.round(concatenated, decimals=4)
 
+    # Inner class for a single attention head
     class SingleHeadAttention(nn.Module):
         def __init__(self, embedding_dim: int, attention_dim: int):
             super().__init__()
             torch.manual_seed(0)
+            # Linear layers to project embeddings into key, query, and value spaces
             self.key_gen = nn.Linear(embedding_dim, attention_dim, bias=False)
             self.query_gen = nn.Linear(embedding_dim, attention_dim, bias=False)
             self.value_gen = nn.Linear(embedding_dim, attention_dim, bias=False)
         
         def forward(self, embedded: TensorType[float]) -> TensorType[float]:
+            # Generate key, query, and value matrices
             k = self.key_gen(embedded)
             q = self.query_gen(embedded)
             v = self.value_gen(embedded)
 
+            # Compute raw attention scores via dot product
             scores = q @ torch.transpose(k, 1, 2) # @ is the same as torch.matmul()
+            # Scale scores to stabilize gradients
             context_length, attention_dim = k.shape[1], k.shape[2]
             scores = scores / (attention_dim ** 0.5)
 
+            # Apply causal mask to prevent attending to future positions
             lower_triangular = torch.tril(torch.ones(context_length, context_length))
             mask = lower_triangular == 0
             scores = scores.masked_fill(mask, float('-inf'))
+            # Normalize scores with softmax
             scores = nn.functional.softmax(scores, dim = 2)
 
+            # Weight values by attention scores
             return scores @ v
