@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torchtyping import TensorType
 
+# Generates a deterministic sequence of characters from a model by autoregressively sampling tokens based on predicted probabilities
 class Solution:
     def generate(self, model, new_chars: int, context: TensorType[int], context_length: int, int_to_char: dict) -> str:
         # Initialise a manual random number generator with a fixed seed for reproducibility
