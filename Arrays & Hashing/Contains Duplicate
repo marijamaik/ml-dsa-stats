@@ -1,8 +1,4 @@
 # Brute Force
-
-# Time complexity: O(n^2)
-# Space complexity: O(1)
-
 class Solution:
     def hasDuplicate(self, nums: List[int]) -> bool:
         for i in range(len(nums)):
@@ -11,13 +7,12 @@ class Solution:
                     return True
         return False
 
+# Time complexity: O(n^2)
+# Space complexity: O(1)
+
 # -------------
 
 # Sorting
-
-# Time complexity: O(nlogn)
-# Space complexity: O(1) or O(n) depending on the sorting algorithm
-
 class Solution:
     def hasDuplicate(self, nums: List[int]) -> bool:
         nums.sort()
@@ -25,14 +20,13 @@ class Solution:
             if nums[i] == nums[i - 1]:
                 return True
         return False
+
+# Time complexity: O(nlogn)
+# Space complexity: O(1) or O(n) depending on the sorting algorithm
     
 # -------------
 
 # Hash Set
-
-# Time complexity: O(n)
-# Space complexity: O(n)
-
 class Solution:
     def hasDuplicate(self, nums: List[int]) -> bool:
         seen = set()
@@ -41,9 +35,16 @@ class Solution:
                 return True
             seen.add(num)
         return False
-    
-# -------------
+
+# Time complexity: O(n)
+# Space complexity: O(n)
 
 # -------------
 
-# -------------
+# Hash Set Length
+class Solution:
+    def hasDuplicate(self, nums: List[int]) -> bool:
+        return len(set(nums)) < len(nums)
+
+# Time complexity: O(n)
+# Space complexity: O(n)
